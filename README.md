@@ -27,4 +27,9 @@ docker run \
 go test ./...
 ```
 
+### Things to improve/add
+- More tests
+- Instead of accepting an input file, refactor to use `stdin`
+- Since originally this was planned to go to `gitlab`, replace `gitlab ci` with `github actions`
+
 Thank you for an awesome challenge.

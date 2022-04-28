@@ -110,27 +110,27 @@ func NewUniverseFromString(input string) (*Universe, error) {
 		}
 
 		if i == 0 {
-			world, err := parseWorld(lines[0])
+			w, err := parseWorld(lines[0])
 			if err != nil {
 				return nil, err
 			}
 
-			universe.World = world
+			universe.World = w
 
-			robot, err := parseRobot(lines[1:])
+			r, err := parseRobot(lines[1:])
 			if err != nil {
 				return nil, err
 			}
-			universe.Robots = append(universe.Robots, robot)
+			universe.Robots = append(universe.Robots, r)
 
 			continue
 		}
 
-		robot, err := parseRobot(lines)
+		r, err := parseRobot(lines)
 		if err != nil {
 			return nil, err
 		}
-		universe.Robots = append(universe.Robots, robot)
+		universe.Robots = append(universe.Robots, r)
 	}
 
 	return universe, nil
