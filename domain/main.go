@@ -1,12 +1,10 @@
-package utils
+package domain
 
 import (
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/bravilogy/robots/domain"
 )
 
 const MaxCoordinateValues = 50
@@ -15,11 +13,11 @@ var (
 	invalidWorldParamsError     = errors.New("invalid world parameters specified")
 	invalidWorldDimensionsError = errors.New("invalid world dimensions specified. the maximum w/h is 50")
 	invalidRobotParamsError     = errors.New("invalid robot parameters specified")
-	invalidInputFormatError     = errors.New("input format seems to be invalid")
 	invalidRobotCoordsError     = errors.New("invalid robot coordinates specified. the maximum x/y is 50")
+	invalidInputFormatError     = errors.New("input format seems to be invalid")
 )
 
-func parseWorld(w string) (*domain.World, error) {
+func parseWorld(w string) (*World, error) {
 	parts := strings.Split(w, " ")
 
 	if len(parts) != 2 {
@@ -40,13 +38,14 @@ func parseWorld(w string) (*domain.World, error) {
 		return nil, invalidWorldDimensionsError
 	}
 
-	return &domain.World{
-		Width:  width,
-		Height: height,
+	return &World{
+		width:  width,
+		height: height,
+		scents: make(map[Coords]bool),
 	}, nil
 }
 
-func parseRobot(buf []string) (*domain.Robot, error) {
+func parseRobot(buf []string) (*Robot, error) {
 	if len(buf) != 2 {
 		return nil, invalidRobotParamsError
 	}
@@ -84,28 +83,27 @@ func parseRobot(buf []string) (*domain.Robot, error) {
 		return nil, invalidRobotParamsError
 	}
 
-	var commands []*domain.Command
+	var commands []Command
 	for _, commandString := range strings.Split(buf[1], "") {
-		c, ok := domain.CommandsLookupTable[commandString]
+		c, ok := CommandsLookupTable[commandString]
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("invalid command specified - %s", commandString))
 		}
 
-		commands = append(commands, &c)
+		commands = append(commands, c)
 	}
 
-	return &domain.Robot{
-		X:           x,
-		Y:           y,
+	return &Robot{
+		Coords:      &Coords{X: x, Y: y},
 		Orientation: orientation,
 		Commands:    commands,
 	}, nil
 
 }
 
-func ParseUniverseFromString(input string) (*domain.Universe, error) {
+func NewUniverseFromString(input string) (*Universe, error) {
 	var (
-		universe = &domain.Universe{}
+		universe = &Universe{}
 		chunks   = strings.Split(input, "\n\n")
 	)
 

@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"github.com/bravilogy/robots/utils"
+	"github.com/bravilogy/robots/domain"
 )
 
 var (
@@ -31,9 +32,21 @@ var rootCmd = cobra.Command{
 			log.Fatal(readInputFileError)
 		}
 
-		_, err = utils.ParseUniverseFromString(string(rawInput))
+		universe, err := domain.NewUniverseFromString(string(rawInput))
 		if err != nil {
 			log.Fatal(err)
+		}
+
+		// run through each robot commands and apply them to the world
+		for _, robot := range universe.Robots {
+			if robot.Lost {
+				continue
+			}
+
+			for _, command := range robot.Commands {
+				fmt.Println(command)
+				command.Run(robot, universe.World)
+			}
 		}
 	},
 }
