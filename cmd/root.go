@@ -17,23 +17,6 @@ var (
 
 var log = logrus.New()
 
-type world struct {
-	width, height int
-}
-
-type command struct {
-	direction string
-}
-
-type robot struct {
-	commands []command
-}
-
-type universe struct {
-	world  *world
-	robots []robot
-}
-
 var rootCmd = cobra.Command{
 	Short: "Martian Robots app",
 	Long:  `This CLI app determines each sequence of robot positions and reports the final position of the robot.`,
