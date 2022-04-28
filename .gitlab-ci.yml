@@ -1,0 +1,34 @@
+stages:
+  - test
+  - build
+
+unit_tests:
+  image: golang
+  stage: test
+  variables:
+    REPO: gitlab.com
+    GROUP: bravilogy
+    PROJECT: red-badger
+  before_script:
+    - mkdir -p $GOPATH/src/$REPO/$GROUP $GOPATH/src/_/builds
+    - cp -r $CI_PROJECT_DIR $GOPATH/src/$REPO/$GROUP/$PROJECT
+    - ln -s $GOPATH/src/$REPO/$GROUP /go/src/_/builds/$GROUP
+    - go get -v -d ./...
+  script:
+    - go test -v ./...
+
+build:app:
+  image: docker:stable
+  stage: build
+  only:
+    - master
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/$IMAGE_NAME:latest" $IMAGE_CONTEXT
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
+  variables:
+    IMAGE_NAME: robots
+    IMAGE_CONTEXT: .
