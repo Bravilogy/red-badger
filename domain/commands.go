@@ -35,6 +35,10 @@ func (c *RightCommand) Run(robot *robot, _ *world) {
 type ForwardCommand struct{}
 
 func (c *ForwardCommand) Run(robot *robot, world *world) {
+	if robot.IsLost() {
+		return
+	}
+
 	r := float64(robot.orientation) * math.Pi / 180
 	x := int(math.Round(float64(robot.coords.x) + math.Cos(r)))
 	y := int(math.Round(float64(robot.coords.y) + math.Sin(r)))

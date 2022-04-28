@@ -40,10 +40,6 @@ var rootCmd = cobra.Command{
 		// run through each robot commands and apply them to the world
 		for _, robot := range universe.Robots {
 			for _, command := range robot.Commands {
-				if robot.IsLost() {
-					continue
-				}
-
 				command.Run(robot, universe.World)
 			}
 
@@ -63,7 +59,6 @@ func init() {
 		FullTimestamp: true,
 	})
 
-	rootCmd.Flags().Bool("debug", false, "Run in debug mode")
 	rootCmd.Flags().String("input", "", "Specify an input path")
 	_ = rootCmd.MarkFlagRequired("input")
 }
