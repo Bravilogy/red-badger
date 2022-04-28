@@ -22,6 +22,11 @@ docker run \
 
 ```
 
+or just use `Makefile` that will do the same steps as above (build + run).
+```
+make
+```
+
 ### Run tests
 ```go
 go test ./...
