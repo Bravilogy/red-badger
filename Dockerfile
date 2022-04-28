@@ -1,5 +1,5 @@
 ### FIRST STAGE BUILD
-FROM  golang:alpine AS build
+FROM golang:alpine AS build
 
 # install some awesome packages
 RUN apk update && apk add git
