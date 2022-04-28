@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"errors"
 	"os"
 
@@ -14,6 +15,23 @@ var (
 )
 
 var log = logrus.New()
+
+type world struct {
+	width, height int
+}
+
+type command struct {
+	direction string
+}
+
+type robot struct {
+	commands []command
+}
+
+type universe struct {
+	world  *world
+	robots []robot
+}
 
 var rootCmd = cobra.Command{
 	Short: "Martian Robots app",
@@ -29,6 +47,17 @@ var rootCmd = cobra.Command{
 			log.Fatal(readInputFileError)
 		}
 		defer file.Close()
+
+		var (
+			scanner  = bufio.NewScanner(file)
+			universe = &universe{}
+		)
+		var line int
+		for scanner.Scan() {
+			if line == 0 {
+
+			}
+		}
 	},
 }
 
