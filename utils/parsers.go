@@ -2,15 +2,21 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/bravilogy/robots/domain"
 )
 
+const MaxCoordinateValues = 50
+
 var (
-	invalidWorldParamsError = errors.New("invalid world parameters specified")
-	invalidRobotParamsError = errors.New("invalid robot parameters specified")
+	invalidWorldParamsError     = errors.New("invalid world parameters specified")
+	invalidWorldDimensionsError = errors.New("invalid world dimensions specified. the maximum w/h is 50")
+	invalidRobotParamsError     = errors.New("invalid robot parameters specified")
+	invalidInputFormatError     = errors.New("input format seems to be invalid")
+	invalidRobotCoordsError     = errors.New("invalid robot coordinates specified. the maximum x/y is 50")
 )
 
 func parseWorld(w string) (*domain.World, error) {
@@ -28,6 +34,10 @@ func parseWorld(w string) (*domain.World, error) {
 	height, err := strconv.Atoi(parts[1])
 	if err != nil {
 		return nil, invalidWorldParamsError
+	}
+
+	if width > MaxCoordinateValues || height > MaxCoordinateValues {
+		return nil, invalidWorldDimensionsError
 	}
 
 	return &domain.World{
@@ -56,6 +66,10 @@ func parseRobot(buf []string) (*domain.Robot, error) {
 		return nil, invalidRobotParamsError
 	}
 
+	if x > MaxCoordinateValues || y > MaxCoordinateValues {
+		return nil, invalidRobotCoordsError
+	}
+
 	var orientation int
 	switch params[2] {
 	case "W":
@@ -70,10 +84,21 @@ func parseRobot(buf []string) (*domain.Robot, error) {
 		return nil, invalidRobotParamsError
 	}
 
+	var commands []*domain.Command
+	for _, commandString := range strings.Split(buf[1], "") {
+		c, ok := domain.CommandsLookupTable[commandString]
+		if !ok {
+			return nil, errors.New(fmt.Sprintf("invalid command specified - %s", commandString))
+		}
+
+		commands = append(commands, &c)
+	}
+
 	return &domain.Robot{
 		X:           x,
 		Y:           y,
 		Orientation: orientation,
+		Commands:    commands,
 	}, nil
 
 }
