@@ -5,6 +5,7 @@ type World struct {
 }
 
 type Robot struct {
+	X, Y, Orientation int
 }
 
 type Universe struct {

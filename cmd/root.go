@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"bufio"
 	"errors"
 	"os"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"github.com/bravilogy/robots/utils"
 )
 
 var (
@@ -42,21 +43,14 @@ var rootCmd = cobra.Command{
 			log.Fatal(missingInputFileError)
 		}
 
-		file, err := os.Open(inputPath)
+		rawInput, err := os.ReadFile(inputPath)
 		if err != nil {
 			log.Fatal(readInputFileError)
 		}
-		defer file.Close()
 
-		var (
-			scanner  = bufio.NewScanner(file)
-			universe = &universe{}
-		)
-		var line int
-		for scanner.Scan() {
-			if line == 0 {
-
-			}
+		_, err = utils.ParseUniverseFromString(string(rawInput))
+		if err != nil {
+			log.Fatal(err)
 		}
 	},
 }
