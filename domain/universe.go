@@ -1,6 +1,6 @@
 package domain
 
 type Universe struct {
-	World  *World
-	Robots []*Robot
+	World  *world
+	Robots []*robot
 }

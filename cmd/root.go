@@ -39,14 +39,15 @@ var rootCmd = cobra.Command{
 
 		// run through each robot commands and apply them to the world
 		for _, robot := range universe.Robots {
-			if robot.Lost {
-				continue
-			}
-
 			for _, command := range robot.Commands {
-				fmt.Println(command)
+				if robot.IsLost() {
+					continue
+				}
+
 				command.Run(robot, universe.World)
 			}
+
+			fmt.Println(robot.Report())
 		}
 	},
 }

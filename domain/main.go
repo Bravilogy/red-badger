@@ -17,7 +17,7 @@ var (
 	invalidInputFormatError     = errors.New("input format seems to be invalid")
 )
 
-func parseWorld(w string) (*World, error) {
+func parseWorld(w string) (*world, error) {
 	parts := strings.Split(w, " ")
 
 	if len(parts) != 2 {
@@ -38,14 +38,14 @@ func parseWorld(w string) (*World, error) {
 		return nil, invalidWorldDimensionsError
 	}
 
-	return &World{
+	return &world{
 		width:  width,
 		height: height,
-		scents: make(map[Coords]bool),
+		scents: make(map[coords]bool),
 	}, nil
 }
 
-func parseRobot(buf []string) (*Robot, error) {
+func parseRobot(buf []string) (*robot, error) {
 	if len(buf) != 2 {
 		return nil, invalidRobotParamsError
 	}
@@ -69,23 +69,9 @@ func parseRobot(buf []string) (*Robot, error) {
 		return nil, invalidRobotCoordsError
 	}
 
-	var orientation int
-	switch params[2] {
-	case "W":
-		orientation = 180
-	case "N":
-		orientation = 90
-	case "E":
-		orientation = 0
-	case "S":
-		orientation = 270
-	default:
-		return nil, invalidRobotParamsError
-	}
-
 	var commands []Command
 	for _, commandString := range strings.Split(buf[1], "") {
-		c, ok := CommandsLookupTable[commandString]
+		c, ok := commandsLookupTable[commandString]
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("invalid command specified - %s", commandString))
 		}
@@ -93,9 +79,14 @@ func parseRobot(buf []string) (*Robot, error) {
 		commands = append(commands, c)
 	}
 
-	return &Robot{
-		Coords:      &Coords{X: x, Y: y},
-		Orientation: orientation,
+	o, ok := orientationLookupTable[params[2]]
+	if !ok {
+		return nil, invalidRobotParamsError
+	}
+
+	return &robot{
+		coords:      &coords{x: x, y: y},
+		orientation: orientation(o),
 		Commands:    commands,
 	}, nil
 
