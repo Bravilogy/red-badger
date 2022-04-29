@@ -34,7 +34,8 @@ go test ./...
 
 ### Things to improve/add
 - More tests
-- Instead of accepting an input file, refactor to use `stdin`
+- Instead of accepting just an input file, refactor to use `stdin`
 - Since originally this was planned to go to `gitlab`, replace `gitlab ci` with `github actions`
+- Refactor input file parsing to use `bufio scanner`
 
 Thank you for an awesome challenge.
