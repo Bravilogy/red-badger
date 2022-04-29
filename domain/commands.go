@@ -1,9 +1,5 @@
 package domain
 
-import (
-	"math"
-)
-
 var commandsLookupTable = map[string]Command{
 	"F": &ForwardCommand{},
 	"L": &LeftCommand{},
@@ -39,9 +35,24 @@ func (c *ForwardCommand) Run(robot *robot, world *world) {
 		return
 	}
 
-	r := float64(robot.orientation) * math.Pi / 180
-	x := int(math.Round(float64(robot.coords.x) + math.Cos(r)))
-	y := int(math.Round(float64(robot.coords.y) + math.Sin(r)))
+	var ix, iy int
+	switch robot.orientation {
+	case 0:
+		ix = 1
+	case 90:
+		iy = 1
+	case 180:
+		ix = -1
+	case 270:
+		iy = -1
+	}
+
+	x := robot.coords.x + ix
+	y := robot.coords.y + iy
+
+	//r := float64(robot.orientation) * math.Pi / 180
+	//x := int(math.Round(float64(robot.coords.x) + math.Cos(r)))
+	//y := int(math.Round(float64(robot.coords.y) + math.Sin(r)))
 
 	if x < 0 || x > world.width || y < 0 || y > world.height {
 		cs := coords{x, y}
